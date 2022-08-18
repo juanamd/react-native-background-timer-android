@@ -130,6 +130,16 @@ public class BackgroundTimerAndroidModule extends ReactContextBaseJavaModule {
 		return constants;
 	}
 
+	@ReactMethod
+	public void addListener(String eventName) {
+		// Keep: Required for RN built in Event Emitter Calls.
+	}
+
+	@ReactMethod
+	public void removeListeners(Integer count) {
+		// Keep: Required for RN built in Event Emitter Calls.
+	}
+
 	private class TimerData {
 		public int id;
 		public Runnable runnable;
