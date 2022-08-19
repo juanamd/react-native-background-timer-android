@@ -2,7 +2,7 @@
   "name": "react-native-background-timer-android",
   "version": "1.0.3",
   "description": "setInterval and setTimeout that work even if the app is running in the background",
-  "main": "index.android.js",
+  "main": "index.js",
   "types": "types/index.d.ts",
   "repository": {
     "type": "git",
