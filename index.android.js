@@ -1,20 +1,23 @@
 import { NativeEventEmitter, NativeModules } from "react-native";
 
 const { RNBackgroundTimerAndroid } = NativeModules;
-const eventEmitter = new NativeEventEmitter(RNBackgroundTimerAndroid);
 const timerDataMap = {};
 let uniqueIdCounter = 0;
 
-eventEmitter.addListener(RNBackgroundTimerAndroid.TIMER_EVENT, id => {
-	const timerData = timerDataMap[id];
-	if (timerData) {
-		const { callback, repeats } = timerData;
-		if (!repeats) delete timerDataMap[id];
-		callback();
-	}
-});
+if (RNBackgroundTimerAndroid !== null) {
+	const eventEmitter = new NativeEventEmitter(RNBackgroundTimerAndroid);
+	eventEmitter.addListener(RNBackgroundTimerAndroid.TIMER_EVENT, id => {
+		const timerData = timerDataMap[id];
+		if (timerData) {
+			const { callback, repeats } = timerData;
+			if (!repeats) delete timerDataMap[id];
+			callback();
+		}
+	});
+}
 
 function setTimer(callback, millis, onError = () => {}, repeats) {
+	assertAndroid();
 	const id = ++uniqueIdCounter;
 	timerDataMap[id] = { callback, repeats };
 	RNBackgroundTimerAndroid.setTimer(id, millis, repeats).catch(onError);
@@ -22,9 +25,16 @@ function setTimer(callback, millis, onError = () => {}, repeats) {
 }
 
 async function clearTimer(id) {
+	assertAndroid();
 	if (timerDataMap[id]) {
 		delete timerDataMap[id];
 		await RNBackgroundTimerAndroid.clearTimer(id);
+	}
+}
+
+function assertAndroid() {
+	if (RNBackgroundTimerAndroid === null) {
+		throw new Error("Background timer can only be used in Android devices");
 	}
 }
 
