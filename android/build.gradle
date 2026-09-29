@@ -1,20 +1,27 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.facebook.react'
 
-def DEFAULT_BUILD_TOOLS_VERSION = "28.0.3"
-def DEFAULT_COMPILE_SDK_VERSION = 28
-def DEFAULT_TARGET_SDK_VERSION = 28
+def DEFAULT_COMPILE_SDK_VERSION = 35
+
+def getExtOrDefault(name, fallback) {
+	return rootProject.ext.has(name) ? rootProject.ext.get(name) : fallback
+}
 
 android {
-	compileSdkVersion rootProject.hasProperty('compileSdkVersion') ? rootProject.compileSdkVersion : DEFAULT_COMPILE_SDK_VERSION
-	buildToolsVersion rootProject.hasProperty('buildToolsVersion') ? rootProject.buildToolsVersion : DEFAULT_BUILD_TOOLS_VERSION
+	namespace "os.juanamd.backgroundtimer"
+	compileSdk getExtOrDefault('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
+
 	defaultConfig {
-		minSdkVersion 16
-		targetSdkVersion rootProject.hasProperty('targetSdkVersion') ? rootProject.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION
-		versionCode 1
-		versionName "1.0"
+		minSdk getExtOrDefault('minSdkVersion', 24)
+		consumerProguardFiles 'consumer-rules.pro'
+	}
+
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_17
+		targetCompatibility JavaVersion.VERSION_17
 	}
 }
 
 dependencies {
-	implementation 'com.facebook.react:react-native:+'
+	implementation 'com.facebook.react:react-android'
 }
