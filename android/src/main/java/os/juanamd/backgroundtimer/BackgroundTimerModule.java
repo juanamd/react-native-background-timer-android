@@ -14,7 +14,7 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BackgroundTimerModule extends RNBackgroundTimerAndroidSpec {
+public class BackgroundTimerModule extends NativeBackgroundTimerAndroidSpec {
 	public static final String NAME = "RNBackgroundTimerAndroid";
 	private static final String TAG = "RNBackgroundTimerAndroid";
 
@@ -33,32 +33,36 @@ public class BackgroundTimerModule extends RNBackgroundTimerAndroidSpec {
 	}
 
 	@Override
-	public void setTimer(int id, double millis, boolean repeats, Promise promise) {
+	public void setTimer(double id, double millis, boolean repeats, Promise promise) {
+		// Codegen does not support integers yet
+		int int_id = (int) id;
 		try {
-			clearTimerInternal(id);
+			clearTimerInternal(int_id);
 
 			long delayMillis = Math.max(0L, (long) millis);
-			Timer timer = new Timer(id, delayMillis, repeats);
-			timers.put(id, timer);
+			Timer timer = new Timer(int_id, delayMillis, repeats);
+			timers.put(int_id, timer);
 			timer.acquireWakeLock();
 			handler.postDelayed(timer.runnable, delayMillis);
 			promise.resolve(null);
-			Log.d(TAG, "setTimer for id: " + id + " for " + millis + " ms. Repeats: " + repeats);
+			Log.d(TAG, "setTimer for id: " + int_id + " for " + millis + " ms. Repeats: " + repeats);
 		} catch (Exception e) {
-			clearTimerInternal(id);
-			Log.e(TAG, "Unable to set timer for id: " + id, e);
+			clearTimerInternal(int_id);
+			Log.e(TAG, "Unable to set timer for id: " + int_id, e);
 			promise.reject("E_SET_TIMER", "Unable to set timer", e);
 		}
 	}
 
 	@Override
-	public void clearTimer(int id, Promise promise) {
+	public void clearTimer(double id, Promise promise) {
+		// Codegen does not support integers yet
+		int int_id = (int) id;
 		try {
-			clearTimerInternal(id);
+			clearTimerInternal(int_id);
 			promise.resolve(null);
-			Log.d(TAG, "clearTimer for id: " + id);
+			Log.d(TAG, "clearTimer for id: " + int_id);
 		} catch (Exception e) {
-			Log.e(TAG, "Unable to clear timer for id: " + id, e);
+			Log.e(TAG, "Unable to clear timer for id: " + int_id, e);
 			promise.reject("E_CLEAR_TIMER", "Unable to clear timer", e);
 		}
 	}
