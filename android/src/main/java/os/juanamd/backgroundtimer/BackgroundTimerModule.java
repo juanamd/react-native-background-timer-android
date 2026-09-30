@@ -98,7 +98,6 @@ public class BackgroundTimerModule extends NativeBackgroundTimerAndroidSpec {
 				Timer currentTimer = timers.get(id);
 				if (currentTimer != Timer.this) return;
 
-				Log.d(TAG, "timer event for id: " + id);
 				try {
 					WritableMap event = Arguments.createMap();
 					event.putInt("id", id);
